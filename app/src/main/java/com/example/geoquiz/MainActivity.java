@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.view.View;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private TextView scoreCounterTextView;
     private Quiz quiz;
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
@@ -43,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
 
+        // score counter
+        scoreCounterTextView = (TextView) findViewById(R.id.score_counter_view);
+
         // question text
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
         updateQuestion();
@@ -52,7 +57,11 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                checkAnswer(true);
+                boolean answer_correct = checkAnswer(true);
+                if (answer_correct) {
+                    int currentScore = Integer.parseInt(scoreCounterTextView.getText().toString());
+                    scoreCounterTextView.setText(Integer.toString(currentScore+1));
+                }
             }
         });
 
@@ -61,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                checkAnswer(false);
+                boolean answer_correct = checkAnswer(false);
+                if (answer_correct) {
+                    int currentScore = Integer.parseInt(scoreCounterTextView.getText().toString());
+                    scoreCounterTextView.setText(Integer.toString(currentScore+1));
+                }
             }
         });
 
@@ -100,20 +113,24 @@ public class MainActivity extends AppCompatActivity {
         mQuestionTextView.setText(question);
     }
 
-    private void checkAnswer(boolean userPressedTrue){
+    private boolean checkAnswer(boolean userPressedTrue){
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
+        boolean res;
 
         // test whether user was correct or incorrect and save result
         if(userPressedTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
+            res = true;
         }
         else {
             messageResId = R.string.incorrect_toast;
+            res = false;
         }
 
         // make and show text telling user if they were correct or incorrect
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        return res;
     }
 
     @Override
