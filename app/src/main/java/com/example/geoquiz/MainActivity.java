@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.view.View;
 import android.widget.TextView;
@@ -14,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
+    private ImageButton mNextButton;
+    private ImageButton mPrevButton;
     private TextView mQuestionTextView;
     private Quiz quiz;
     private static final String TAG = "MainActivity";
@@ -64,12 +66,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // next button click handling
-        mNextButton = (Button)findViewById(R.id.next_button);
+        mNextButton = (ImageButton)findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+            }
+        });
+
+        // previous button click handling
+        mPrevButton = (ImageButton) findViewById(R.id.prev_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentIndex > 0) {
+                    mCurrentIndex = (mCurrentIndex - 1);
+                    updateQuestion();
+                }
             }
         });
     }
