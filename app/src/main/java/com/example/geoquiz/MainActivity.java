@@ -12,6 +12,8 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button mTrueButton;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
     private TextView scoreCounterTextView;
+    private TextView questionCounterTextView;
     private Quiz quiz;
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
@@ -47,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
         // score counter
         scoreCounterTextView = (TextView) findViewById(R.id.score_counter_view);
+
+        // question counter for user context
+        questionCounterTextView = (TextView) findViewById(R.id.question_counter_text);
+        updateQuestionCounterText();
 
         // question text
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         // next button click handling
         mNextButton = (ImageButton)findViewById(R.id.next_button);
+        updateQuestionCounterText();
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
         // previous button click handling
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
+        updateQuestionCounterText();
         mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // prevent carouseling
                 if (mCurrentIndex > 0) {
                     mCurrentIndex = (mCurrentIndex - 1);
                     updateQuestion();
@@ -111,6 +121,19 @@ public class MainActivity extends AppCompatActivity {
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
+    }
+
+    private void updateQuestionCounterText() {
+        int currQuestionNumber = mCurrentIndex + 1;
+        int totalQuestions = mQuestionBank.length;
+
+        String displayText = "Question "
+                + currQuestionNumber
+                + " of "
+                + totalQuestions
+                + ".";
+
+        questionCounterTextView.setText(displayText);
     }
 
     private boolean checkAnswer(boolean userPressedTrue){
