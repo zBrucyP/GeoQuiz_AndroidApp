@@ -87,24 +87,24 @@ public class MainActivity extends AppCompatActivity {
 
         // next button click handling
         mNextButton = (ImageButton)findViewById(R.id.next_button);
-        updateQuestionCounterText();
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestionCounterText();
                 updateQuestion();
             }
         });
 
         // previous button click handling
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
-        updateQuestionCounterText();
         mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // prevent carouseling
                 if (mCurrentIndex > 0) {
                     mCurrentIndex = (mCurrentIndex - 1);
+                    updateQuestionCounterText();
                     updateQuestion();
                 }
             }
