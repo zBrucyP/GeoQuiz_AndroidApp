@@ -1,7 +1,9 @@
 package com.example.geoquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -23,7 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
     private TextView scoreCounterTextView;
     private TextView questionCounterTextView;
+    private ConstraintLayout layout;
     private Quiz quiz;
+    private int correctColor;
+    private int inCorrectColor;
+    private int baseBackgroundColor;
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
 
@@ -48,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
 
+        // layout, layout background colors
+        layout = (ConstraintLayout) findViewById(R.id.constraintLayout);
+        correctColor = getResources().getColor(R.color.correctColor);
+        inCorrectColor = getResources().getColor(R.color.incorrectColor);
+        baseBackgroundColor = getResources().getColor(R.color.baseBackgroundColor);
+
         // score counter
         scoreCounterTextView = (TextView) findViewById(R.id.score_counter_view);
 
@@ -64,10 +76,25 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+
+                // mark question as answered
+                mQuestionBank[mCurrentIndex].setAnswered(true);
+
+                // handle whether the user's answer was correct or not
                 boolean answer_correct = checkAnswer(true);
                 if (answer_correct) {
+                    // update question and layout
+                    mQuestionBank[mCurrentIndex].setAnsweredCorrectly(true);
+                    updateQuestion();
+
+                    //update score
                     int currentScore = Integer.parseInt(scoreCounterTextView.getText().toString());
                     scoreCounterTextView.setText(Integer.toString(currentScore+1));
+                }
+                else {
+                    // update question and layout
+                    mQuestionBank[mCurrentIndex].setAnsweredCorrectly(false);
+                    updateQuestion();
                 }
             }
         });
@@ -77,10 +104,25 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
+                // mark question as answered
+                mQuestionBank[mCurrentIndex].setAnswered(true);
+
+                // handle whether the user's answer was correct or not
                 boolean answer_correct = checkAnswer(false);
                 if (answer_correct) {
+                    // update question and layout
+                    mQuestionBank[mCurrentIndex].setAnsweredCorrectly(true);
+                    updateQuestion();
+
+                    //update score
                     int currentScore = Integer.parseInt(scoreCounterTextView.getText().toString());
                     scoreCounterTextView.setText(Integer.toString(currentScore+1));
+                }
+                else {
+                    // update question and layout
+                    mQuestionBank[mCurrentIndex].setAnsweredCorrectly(false);
+                    updateQuestion();
                 }
             }
         });
@@ -119,8 +161,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateQuestion() {
+        // get question data according to index
         int question = mQuestionBank[mCurrentIndex].getTextResId();
+        boolean question_answered = mQuestionBank[mCurrentIndex].isAnswered();
+        Boolean question_answered_correctly = mQuestionBank[mCurrentIndex].isAnsweredCorrectly();
+
+        // update displayed question
         mQuestionTextView.setText(question);
+
+        if (question_answered) {
+            // disable buttons
+            mTrueButton.setClickable(false);
+            mFalseButton.setClickable(false);
+
+            // update background
+            if (question_answered_correctly == null) {
+                layout.setBackgroundColor(baseBackgroundColor);
+            } else if (question_answered_correctly.equals(true)) {
+                layout.setBackgroundColor(correctColor);
+            } else if (question_answered_correctly.equals(false)) {
+                layout.setBackgroundColor(inCorrectColor);
+            }
+        }
+        else{
+            // enable buttons
+            mTrueButton.setClickable(true);
+            mFalseButton.setClickable(true);
+        }
     }
 
     private void updateQuestionCounterText() {
