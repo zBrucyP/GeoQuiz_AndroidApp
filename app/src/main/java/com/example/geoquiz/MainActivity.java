@@ -31,21 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private int correctColor;
     private int inCorrectColor;
     private int baseBackgroundColor;
-
-    // savedInstance keys
     private static final String TAG = "MainActivity";
-    private static final String KEY_INDEX = "index";
-    private static final String KEY_SCORE = "score";
+    //private static final String KEY_INDEX = "index";
     private static final String KEY_QUIZ = "quiz";
-    //private int mCurrentIndex = 0;
-    /*private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_australia, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true)
-    };*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
