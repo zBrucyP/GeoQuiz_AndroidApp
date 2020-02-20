@@ -3,6 +3,7 @@ package com.example.geoquiz;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mFalseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView;
     private TextView scoreCounterTextView;
     private TextView questionCounterTextView;
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         // next & prev buttons
         mNextButton = (ImageButton)findViewById(R.id.next_button);
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
+
+        // cheat button
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
 
         // score counter
         scoreCounterTextView = (TextView) findViewById(R.id.score_counter_view);
@@ -131,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
                     quiz.getQuestion(quiz.getCurrentIndex()).setAnsweredCorrectly(false);
                     refreshUserView();
                 }
+            }
+        });
+
+        // cheat button click handling
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start CheatActivity
+                Intent intent = new Intent(MainActivity.this, CheatActivity.class);
+                startActivity(intent);
             }
         });
 
