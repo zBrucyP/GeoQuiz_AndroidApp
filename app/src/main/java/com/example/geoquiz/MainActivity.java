@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private int correctColor;
     private int inCorrectColor;
     private int baseBackgroundColor;
+    private boolean mIsCheater;
     private static final String TAG = "MainActivity";
     //private static final String KEY_INDEX = "index";
     private static final String KEY_QUIZ = "quiz";
@@ -145,7 +146,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // start CheatActivity
                 Intent intent = new Intent(MainActivity.this, CheatActivity.class);
-                startActivity(intent);
+                boolean answerIsTrue = quiz.getQuestion(quiz.getCurrentIndex()).isAnswerTrue();
+                intent.putExtra("EXTRA_ANSWER_IS_TRUE", answerIsTrue);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -174,6 +177,17 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onSaveInstanceState");
         //savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putParcelable(KEY_QUIZ, quiz);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        // record whether the user cheated
+        quiz.getQuestion(quiz.getCurrentIndex())
+                .setUserCheated(
+                        data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false));
     }
 
     private void updateQuestion() {
@@ -227,17 +241,21 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = quiz.getQuestion(quiz.getCurrentIndex()).isAnswerTrue();
         int messageResId = 0;
         boolean res;
+        boolean user_cheated = quiz.getQuestion(quiz.getCurrentIndex()).getUserCheated();
 
-        // test whether user was correct or incorrect and save result
-        if(userPressedTrue == answerIsTrue) {
-            messageResId = R.string.correct_toast;
-            res = true;
-        }
-        else {
-            messageResId = R.string.incorrect_toast;
+        if (user_cheated) {
+            messageResId = R.string.judgement_toast;
             res = false;
         }
-
+        else {// test whether user was correct or incorrect and save result
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+                res = true;
+            } else {
+                messageResId = R.string.incorrect_toast;
+                res = false;
+            }
+        }
         // make and show text telling user if they were correct or incorrect
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
         return res;

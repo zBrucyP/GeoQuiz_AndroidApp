@@ -5,10 +5,12 @@ public class Question {
     private boolean mAnswerTrue;
     private boolean answered;
     private Boolean answeredCorrectly;
+    private boolean userCheated;
 
     public Question(int textResId, boolean answerTrue) {
         mTextResId = textResId;
         mAnswerTrue = answerTrue;
+        userCheated = false;
     }
 
     public int getTextResId() {
@@ -41,5 +43,13 @@ public class Question {
 
     public void setAnswered(boolean answered) {
         this.answered = answered;
+    }
+
+    public boolean getUserCheated() {
+        return userCheated;
+    }
+
+    public void setUserCheated(boolean userCheated) {
+        this.userCheated = userCheated;
     }
 }
